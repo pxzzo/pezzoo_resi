@@ -8,7 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=rettungssimulator.online
 // @grant        none
 // ==/UserScript==
-const apiKey = bb4962bbfef84781841b9824d5ad6137
+const apiKey = "YOUR_API_KEY"
 
 
 socket.on("vehicleFMS", (vehicleFMSObject) =>{
