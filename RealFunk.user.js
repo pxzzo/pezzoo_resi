@@ -18,21 +18,32 @@ socket.on("vehicleFMS", (vehicleFMSObject) =>{
     ${vehicleFMSObject.userVehicleName}
     changed Status to ${vehicleFMSObject.userVehicleFMS}
     (ID: ${vehicleFMSObject.userVehicleID})
+    and DepartmentID
  `);
+ const departmentID = vehicleFMSObject.userDepartmentID
     $.ajax({
         url: "/api/userBuildings",
         dataType: "json",
-        type : "GET",
-        id : vehicleFMSObject.userDepartmentID,
+        type : "GET"
     }).then((department) => {
-    new Audio(`http://api.voicerss.org/?key=${apiKey}&hl=de-de&v=Lina&f=16khz_16bit_stereo&src=${department[0].userBuildingName}%20für%20${vehicleFMSObject.userVehicleName}!`).play()
+        function findBuildingByID(dpID) {
+    return department.find(building => building.userBuildingID === dpID);
+}
+
+const foundBuilding = findBuildingByID(departmentID);
+
+if (foundBuilding) {
+    console.log("Found building:", foundBuilding);
+    new Audio(`http://api.voicerss.org/?key=${apiKey}&hl=de-de&v=Lina&f=16khz_16bit_stereo&src=${foundBuilding.userBuildingName}%20für%20${vehicleFMSObject.userVehicleName}!`).play()
         setTimeout(() => {
-        new Audio(`http://api.voicerss.org/?key=${apiKey}&hl=de-de&v=Jonas&f=16khz_16bit_stereo&src=${department[0].userBuildingName} hört!`).play()
+        new Audio(`http://api.voicerss.org/?key=${apiKey}&hl=de-de&v=Jonas&f=16khz_16bit_stereo&src=${foundBuilding.userBuildingName} hört!`).play()
         }, 8000)
         setTimeout(() => {
         new Audio(`http://api.voicerss.org/?key=${apiKey}&hl=de-de&v=Lina&f=16khz_16bit_stereo&src=Wir gehen in den Status ${vehicleFMSObject.userVehicleFMS}!`).play()
         }, 13000)
+} else {
+    console.log("Building not found.");
+    return
+}
+    
     })
-
- //Change Status in department List
-});
