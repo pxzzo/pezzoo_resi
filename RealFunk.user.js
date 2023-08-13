@@ -24,11 +24,9 @@ socket.on("vehicleFMS", (vehicleFMSObject) => {
     dataType: "json",
     type: "GET",
   }).then((department) => {
-    function findBuildingByID(dpID) {
-      return department.find((building) => building.userBuildingID === dpID);
-    }
-
-    const foundBuilding = findBuildingByID(departmentID);
+    const foundBuilding = department.find(
+      (building) => building.userBuildingID === findBuildingByID(departmentID)
+    );
 
     if (foundBuilding) {
       console.log("Found building:", foundBuilding);
