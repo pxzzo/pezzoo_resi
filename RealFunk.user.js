@@ -23,7 +23,6 @@ socket.on("vehicleFMS", (vehicleFMSObject) => {
 
 function doThis(vehicleFMSObject) {
   let timeOut = 1;
-  createRadioMessage(vehicleFMSObject);
   console.log(`
       ${vehicleFMSObject.userVehicleName}
       changed Status to ${vehicleFMSObject.userVehicleFMS}
