@@ -14,6 +14,7 @@ var mission = document.querySelector (
 );
 
 var missionid = mission.getAttribute('missionid')
+var userMissionId = mission.getAttribute('usermissionid')
 
 $.ajax({
     url: "/api/missions",
@@ -23,7 +24,8 @@ $.ajax({
         "id": missionid
     },
     success : function(r) {
-
-        $('#s5').after(`<span class='label label-info'> Credits: ${r.credits}`)
+        var credits = r.credits
+        if (parent.ControlCenter.missions[userMissionId].isShared) credits = credits*0.8
+        $('#s5').after(`<span class='label label-info'> Credits: ${credits}`)
     }
 });
