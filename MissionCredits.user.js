@@ -26,6 +26,6 @@ $.ajax({
     success : function(r) {
         var credits = r.credits
         if (parent.ControlCenter.missions[userMissionId].isShared) credits = credits*0.8
-        $('#s5').after(`<span class='label label-info'> Credits: ${credits}`)
+        $('#s5').after(`<span class='label label-info label-round'> Credits: ${credits}`)
     }
 });
