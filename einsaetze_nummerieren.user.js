@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Einsatznummer im MissionPanel
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Zeigt die laufende Einsatznummer unten rechts im Einsatzkasten an (class=mission-list-mission), mit automatischer Nachnummerierung bei neuen Einsätzen im Mission-Panel.
 // @author       pesooo
 // @match        *://rettungssimulator.online/*
 // @grant        none
+// @run-at       document-idle
 // ==/UserScript==
 
 (function () {
@@ -26,26 +27,45 @@
                 nummer.style.fontWeight = 'bold';
                 nummer.style.fontSize = '1.1em';
                 nummer.style.color = '#FFD700';
-                einsatz.style.position = 'relative'; // für absolute Positionierung wichtig
+                einsatz.style.position = 'relative';
                 einsatz.appendChild(nummer);
             }
             nummer.textContent = (index + 1).toString();
         });
     }
 
-    window.addEventListener('load', () => {
-        setTimeout(nummeriereMissionen, 1000); // Initial warten
+    // Debounce-Funktion: führt eine Funktion verzögert aus und verhindert Mehrfachausführung
+    function debounce(func, delay) {
+        let timeout;
+        return function () {
+            clearTimeout(timeout);
+            timeout = setTimeout(func, delay);
+        };
+    }
 
+    function initObserver() {
         const missionsContainer = document.querySelector('#missions');
-        if (!missionsContainer) return;
+        if (!missionsContainer) {
+            setTimeout(initObserver, 1000);
+            return;
+        }
 
-        const observer = new MutationObserver(() => {
+        nummeriereMissionen();
+
+        const observer = new MutationObserver(debounce(() => {
             nummeriereMissionen();
-        });
+        }, 300)); // nur max. 1x alle 300ms ausführen
 
         observer.observe(missionsContainer, {
             childList: true,
             subtree: true,
         });
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initObserver);
+    } else {
+        initObserver();
+    }
 })();
+
