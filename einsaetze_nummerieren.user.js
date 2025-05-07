@@ -2,12 +2,13 @@
 // @name         Einsatznummerierung im MissionPanel
 // @namespace    http://tampermonkey.net/
 // @version      1.2
-// @description  Zeigt laufende Einsatznummern im MissionPanel.
+// @description  Zeigt laufende Einsatznummern im MissionPanel
 // @author       pesooo
 // @match        *://rettungssimulator.online/*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==
+
 
 (function () {
     'use strict';
@@ -15,7 +16,6 @@
     const einsatzSelector = '.mission-list-mission[usermissionid]';
 
     function isVerbandseinsatz(einsatz) {
-        // Alle Einsätze unterhalb von #sharedMissions sind Verbandseinsätze
         return einsatz.closest('#sharedMissions') !== null;
     }
 
@@ -25,24 +25,32 @@
         let verband = 1;
 
         einsaetze.forEach((einsatz) => {
+            einsatz.style.position = 'relative';
+
+            // Einsatznummer
             let nummer = einsatz.querySelector('.einsatzNummer');
             if (!nummer) {
                 nummer = document.createElement('div');
                 nummer.className = 'einsatzNummer';
-                nummer.style.position = 'absolute';
-                nummer.style.bottom = '10px';
-                nummer.style.right = '30px';
+                nummer.style.position = 'relative';
+                nummer.style.left = '12px';
+                nummer.style.bottom = '6px';
                 nummer.style.fontWeight = 'bold';
                 nummer.style.fontSize = '1.1em';
                 nummer.style.color = '#FFA500';
-                einsatz.style.position = 'relative';
                 einsatz.appendChild(nummer);
             }
+            nummer.textContent = isVerbandseinsatz(einsatz) ? `V${verband++}` : `${eigene++}`;
 
-            if (isVerbandseinsatz(einsatz)) {
-                nummer.textContent = `V${verband++}`;
-            } else {
-                nummer.textContent = `${eigene++}`;
+            // Fortschrittsbalken sauber positionieren
+            const balken = einsatz.querySelector('.mission-list-progress');
+            if (balken) {
+                balken.style.position = 'absolute';
+                balken.style.left = '0';
+                balken.style.right = '0';
+                balken.style.bottom = '0'; // ganz unten
+                balken.style.height = '6px';
+                balken.style.zIndex = '0';
             }
         });
     }
