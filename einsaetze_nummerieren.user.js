@@ -61,7 +61,7 @@
         const button = document.createElement('button');
         button.textContent = '⚙️';
         button.title = 'Einsatznummern-Position';
-        button.style.background = '#444';
+        button.style.background = '#282C35';
         button.style.color = '#fff';
         button.style.border = 'none';
         button.style.padding = '4px 8px';
