@@ -34,7 +34,7 @@
                 nummer.style.right = '30px';
                 nummer.style.fontWeight = 'bold';
                 nummer.style.fontSize = '1.1em';
-                nummer.style.color = '#FFD700';
+                nummer.style.color = '#FFA500';
                 einsatz.style.position = 'relative';
                 einsatz.appendChild(nummer);
             }
