@@ -12,7 +12,7 @@
 (function () {
     'use strict';
 
-    const GESCHWINDIGKEIT_KMH = 82.15;
+    const GESCHWINDIGKEIT_KMH = 71.15;
     const UPDATE_INTERVAL_MS = 1000;
     const STORAGE_KEY = 'pesoooETAStore';
 
