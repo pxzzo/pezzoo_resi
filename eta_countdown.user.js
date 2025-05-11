@@ -63,8 +63,28 @@
         return `${min}:${sec}`;
     }
 
-    function erweitereAlarmierungsfenster() {
+    function erweitereAlarmierungsfensterBuilding() {
         const fahrzeuge = document.querySelectorAll('.mission-vehicles .vehicle');
+        fahrzeuge.forEach(fz => {
+            const distEl = fz.querySelector('.vehicle-distance');
+            if (!distEl || distEl.textContent.includes('⏱')) return;
+            const match = distEl.textContent.match(/~([\d.,]+)\s*km/);
+            if (match) {
+                const dist = parseFloat(match[1].replace(',', '.'));
+                const etaTimestamp = berechneETA(dist);
+                const id = fz.getAttribute('vehicleid') || fz.getAttribute('uservehicleid') || fz.dataset.vehicleid;
+                if (id) {
+                    window.pesoooETAs[id] = etaTimestamp;
+                    saveETAsToStorage();
+                }
+                const countdown = formatCountdown(etaTimestamp);
+                distEl.textContent += ` ⏱ ${countdown}`;
+            }
+        });
+    }
+
+    function erweitereAlarmierungsfensterVehicle() {
+        const fahrzeuge = document.querySelectorAll('.mission-vehicles-list .vehicle');
         fahrzeuge.forEach(fz => {
             const distEl = fz.querySelector('.vehicle-distance');
             if (!distEl || distEl.textContent.includes('⏱')) return;
@@ -116,7 +136,8 @@
     }
 
     const observer = new MutationObserver(() => {
-        erweitereAlarmierungsfenster();
+        erweitereAlarmierungsfensterBuilding();
+        erweitereAlarmierungsfensterVehicle();
         erweitereAufAnfahrtBereich();
     });
 
@@ -127,7 +148,8 @@
 
     window.addEventListener('load', () => {
         setTimeout(() => {
-            erweitereAlarmierungsfenster();
+            erweitereAlarmierungsfensterBuilding();
+            erweitereAlarmierungsfensterVehicle();
             erweitereAufAnfahrtBereich();
             startLiveUpdate();
         }, 1000);
