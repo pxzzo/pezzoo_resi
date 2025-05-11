@@ -135,16 +135,24 @@
         }, UPDATE_INTERVAL_MS);
     }
 
-    const observer = new MutationObserver(() => {
-        erweitereAlarmierungsfensterBuilding();
-        erweitereAlarmierungsfensterVehicle();
-        erweitereAufAnfahrtBereich();
-    });
+    let observerGestartet = false;
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-    });
+    function starteObserver() {
+        if (observerGestartet) return;
+        observerGestartet = true;
+
+        const observer = new MutationObserver(() => {
+            erweitereAlarmierungsfensterBuilding();
+            erweitereAlarmierungsfensterVehicle();
+            erweitereAufAnfahrtBereich();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
 
     window.addEventListener('load', () => {
         setTimeout(() => {
@@ -152,6 +160,7 @@
             erweitereAlarmierungsfensterVehicle();
             erweitereAufAnfahrtBereich();
             startLiveUpdate();
+            starteObserver();
         }, 1000);
     });
 })();
