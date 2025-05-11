@@ -6,7 +6,7 @@
 // @author       pesooo
 // @match        *://rettungssimulator.online/*
 // @grant        none
-// @run-at       document-idle
+// @run-at       document-end
 // ==/UserScript==
 
 (function () {
@@ -124,14 +124,41 @@
                 zielzelle.appendChild(etaSpan);
             }
 
-            etaSpan.textContent = `⏱ ${formatCountdown1(eta, now)}`;
+            const neuerText = `⏱ ${formatCountdown1(eta, now)}`;
+            if (etaSpan.textContent !== neuerText) {
+                etaSpan.textContent = neuerText;
+            }
+
         });
     }
+
+    function updateCountdownsOhneMutation() {
+        const zeilen = document.querySelectorAll('.card.enroute tr[uservehicleid]');
+        const now = Math.floor(Date.now() / 1000);
+
+        zeilen.forEach(tr => {
+            const id = tr.getAttribute('uservehicleid');
+            const eta = window.pesoooETAs[id];
+            if (!id || !eta) return;
+
+            const zielzelle = tr.querySelector('td:nth-child(2)');
+            if (!zielzelle) return;
+
+            let etaSpan = zielzelle.querySelector('.eta-display');
+            if (!etaSpan) return;
+
+            const neuerText = `⏱ ${formatCountdown1(eta, now)}`;
+            if (etaSpan.textContent !== neuerText) {
+                etaSpan.textContent = neuerText;
+            }
+        });
+    }
+
 
     function startLiveUpdate() {
         setInterval(() => {
             cleanupOldETAs();
-            erweitereAufAnfahrtBereich();
+            updateCountdownsOhneMutation();
         }, UPDATE_INTERVAL_MS);
     }
 
